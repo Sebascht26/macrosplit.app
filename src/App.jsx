@@ -367,6 +367,7 @@ export default function App() {
          <div className="space-x-4">
            <a href="/impressum.html" className="underline">Impressum</a>
            <a href="/disclaimer.html" className="underline">Disclaimer</a>
+           <a href="/privacy.html" className="underline">Privacy Policy</a>
          </div>
       </footer>
     </div>
