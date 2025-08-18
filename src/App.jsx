@@ -362,8 +362,12 @@ export default function App() {
         </section>
       </main>
 
-      <footer className="py-8 text-center text-xs text-gray-500">
-        Built with React + Tailwind. Calorie deltas use ~7700 kcal/kg or ~3500 kcal/lb.
+      <footer className="py-8 text-center text-xs text-gray-500 space-y-2 border-t">
+         <div>Built with React + Tailwind. Calorie deltas use ~7700 kcal/kg or ~3500 kcal/lb.</div>
+         <div className="space-x-4">
+           <a href="/impressum.html" className="underline">Impressum</a>
+           <a href="/disclaimer.html" className="underline">Disclaimer</a>
+         </div>
       </footer>
     </div>
   );
@@ -439,3 +443,5 @@ function MacroSlider({ label, min, max, value, onChange, subtitle, disabled = fa
     </div>
   );
 }
+
+
