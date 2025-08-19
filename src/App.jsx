@@ -37,6 +37,9 @@ export default function App() {
   // Lock macro total to target calories by auto-adjusting CARBS
   const [lockMacrosToCalories, setLockMacrosToCalories] = useState(true);
 
+  const [showActivityHelp, setShowActivityHelp] = useState(false);
+
+
   // ---- Derived displays for imperial inputs (but keep core in metric) ----
   const displayedLbs = Math.round(weight * LB_PER_KG);
   const totalInches = Math.round(height / 2.54);
@@ -339,11 +342,11 @@ export default function App() {
           </div>
 
           <div className="mt-4">
-            {kcalDiff === 0 ? (
-              <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-3 py-2 inline-block">
-                Macros match your target calories.
-              </div>
-            ) : lockMacrosToCalories ? (
+            {Math.abs(kcalDiff) <= KCAL_TOL ? (
+  <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-3 py-2 inline-block">
+    Macros closely match your target (±{KCAL_TOL} kcal).
+  </div>
+) : lockMacrosToCalories ? (
               <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2 inline-block">
                 Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
               </div>
@@ -410,17 +413,18 @@ function Segmented({ active, children, onClick }) {
 function InfoTile({ title, value, highlight = false }) {
   return (
     <div
-      className={`rounded-2xl border p-4 ${
+      className={`rounded-2xl border p-5 ${
         highlight
-          ? "border-blue-200 bg-blue-50 text-blue-800"
+          ? "border-blue-300 bg-blue-600 text-white"
           : "border-gray-200 bg-gray-50 text-gray-700"
       }`}
     >
-      <div className="text-xs uppercase tracking-wide">{title}</div>
-      <div className="mt-1 text-lg font-semibold">{value}</div>
+      <div className={`text-xs uppercase tracking-wide ${highlight ? "opacity-90" : ""}`}>{title}</div>
+      <div className={`mt-1 ${highlight ? "text-2xl font-bold" : "text-lg font-semibold"}`}>{value}</div>
     </div>
   );
 }
+
 
 function MacroSlider({ label, min, max, value, onChange, subtitle, disabled = false }) {
   return (
