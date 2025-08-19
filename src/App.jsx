@@ -68,7 +68,7 @@ export default function App() {
 
   const macroCalories = protein * 4 + fat * 9 + carbs * 4;
   const kcalDiff = calcCalories - macroCalories;
-
+  const KCAL_TOL = 15; // allow small rounding tolerance for macro calories
   // Auto-balance carbs whenever locked and dependencies change
   useEffect(() => {
     if (!lockMacrosToCalories) return;
@@ -342,25 +342,26 @@ export default function App() {
           </div>
 
           <div className="mt-4">
-            {Math.abs(kcalDiff) <= KCAL_TOL ? (
-  <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-3 py-2 inline-block">
-    Macros closely match your target (±{KCAL_TOL} kcal).
-  </div>
-) : lockMacrosToCalories ? (
-              <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2 inline-block">
-                Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
-              </div>
-            ) : (
-              <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 inline-flex items-center gap-2">
-                Your macros are {Math.abs(kcalDiff)} kcal {kcalDiff > 0 ? "below" : "above"} target.
-                <button
-                  onClick={autoBalanceCarbs}
-                  className="ml-1 underline decoration-amber-500 hover:opacity-80"
-                >
-                  Auto-balance carbs
-                </button>
-              </div>
-            )}
+  {Math.abs(kcalDiff) <= KCAL_TOL ? (
+    <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-3 py-2 inline-block">
+      Macros closely match your target (±{KCAL_TOL} kcal).
+    </div>
+  ) : lockMacrosToCalories ? (
+    <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2 inline-block">
+      Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
+    </div>
+  ) : (
+    <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 inline-flex items-center gap-2">
+      Your macros are {Math.abs(kcalDiff)} kcal {kcalDiff > 0 ? "below" : "above"} target.
+      <button
+        onClick={autoBalanceCarbs}
+        className="ml-1 underline decoration-amber-500 hover:opacity-80"
+      >
+        Auto-balance carbs
+      </button>
+    </div>
+  )}
+
           </div>
         </section>
       </main>
