@@ -101,24 +101,22 @@ export default function MacroCalculator() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-white text-slate-900">
       <main className="mx-auto max-w-5xl px-4 py-8 grid gap-6">
-        {/* Page title + actions (replaces old header buttons) */}
+        {/* Page title + actions */}
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight text-blue-700">
-            Macronutrient Calculator
-          </h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Macronutrient Calculator</h1>
           <div className="flex gap-2">
             <button
               onClick={applySmartDefaults}
-              className="rounded-xl px-3 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+              className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800"
             >
               Smart defaults
             </button>
             {!lockMacrosToCalories && (
               <button
                 onClick={autoBalanceCarbs}
-                className="rounded-xl px-3 py-2 text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300"
+                className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-100 border border-slate-200 text-slate-900 hover:bg-slate-200"
               >
                 Auto-balance carbs
               </button>
@@ -127,18 +125,18 @@ export default function MacroCalculator() {
         </div>
 
         {/* STEP 1: CALORIES */}
-        <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">Step 1 · Calories</h2>
-            <div className="inline-flex rounded-xl overflow-hidden border border-gray-200">
+            <h2 className="text-lg font-semibold">Step 1 · Calories</h2>
+            <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
               <button
-                className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
                 onClick={() => switchUnits("metric")}
               >
                 Metric (kg/cm)
               </button>
               <button
-                className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
                 onClick={() => switchUnits("imperial")}
               >
                 Imperial (lb/ft/in)
@@ -147,15 +145,15 @@ export default function MacroCalculator() {
           </div>
 
           {/* Mode Toggle */}
-          <div className="inline-flex rounded-xl overflow-hidden border border-gray-200">
+          <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
             <button
-              className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+              className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
               onClick={() => setMode("calculate")}
             >
               Calculate
             </button>
             <button
-              className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+              className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
               onClick={() => setMode("custom")}
             >
               Enter custom
@@ -187,13 +185,13 @@ export default function MacroCalculator() {
                     <Field label={`Height: ${displayedFt} ft ${displayedIn} in`}>
                       <div className="space-y-2">
                         <div>
-                          <div className="text-xs text-gray-500 mb-1">Feet</div>
+                          <div className="text-xs text-slate-500 mb-1">Feet</div>
                           <input type="range" min={4} max={7} value={displayedFt}
                             onChange={(e) => setHeightFromFtIn(+e.target.value, displayedIn)}
                             className="w-full" />
                         </div>
                         <div>
-                          <div className="text-xs text-gray-500 mb-1">Inches</div>
+                          <div className="text-xs text-slate-500 mb-1">Inches</div>
                           <input type="range" min={0} max={11} value={displayedIn}
                             onChange={(e) => setHeightFromFtIn(displayedFt, +e.target.value)}
                             className="w-full" />
@@ -218,7 +216,7 @@ export default function MacroCalculator() {
 
               <Card>
                 <div className="mb-4">
-                  <div className="text-sm font-medium text-gray-700 mb-2">Sex</div>
+                  <div className="text-sm font-medium text-slate-700 mb-2">Sex</div>
                   <div className="flex gap-2">
                     <Segmented active={sex === "male"} onClick={() => setSex("male")}>Male</Segmented>
                     <Segmented active={sex === "female"} onClick={() => setSex("female")}>Female</Segmented>
@@ -233,7 +231,7 @@ export default function MacroCalculator() {
                     onChange={(e) => setActivityIndex(+e.target.value)}
                     className="w-full"
                   />
-                  <div className="mt-1 text-xs text-gray-500">{activity.desc}</div>
+                  <div className="mt-1 text-xs text-slate-500">{activity.desc}</div>
                 </Field>
 
                 <Field
@@ -249,7 +247,7 @@ export default function MacroCalculator() {
                     onChange={(e) => setGoalRate(+e.target.value)}
                     className="w-full"
                   />
-                  <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <div className="flex justify-between text-xs text-slate-500 mt-1">
                     <span>Lose faster</span>
                     <span>Maintain</span>
                     <span>Gain faster</span>
@@ -260,11 +258,11 @@ export default function MacroCalculator() {
           ) : (
             // Custom Mode
             <div className="mt-6 max-w-sm">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Custom calories</label>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Custom calories</label>
               <input
                 type="number"
                 inputMode="numeric"
-                className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700"
                 value={customCalories}
                 onChange={(e) => setCustomCalories(+e.target.value)}
                 min={0}
@@ -280,9 +278,9 @@ export default function MacroCalculator() {
         </section>
 
         {/* STEP 2: MACROS */}
-        <section className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-800">Step 2 · Macros (grams)</h2>
+            <h2 className="text-lg font-semibold">Step 2 · Macros (grams)</h2>
             <label className="inline-flex items-center gap-2 select-none">
               <input
                 type="checkbox"
@@ -290,12 +288,16 @@ export default function MacroCalculator() {
                 checked={lockMacrosToCalories}
                 onChange={(e) => setLockMacrosToCalories(e.target.checked)}
               />
-              <span className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-                lockMacrosToCalories ? "bg-blue-600" : "bg-gray-300"
-              }`}>
-                <span className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
-                  lockMacrosToCalories ? "translate-x-5" : "translate-x-1"
-                }`} />
+              <span
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                  lockMacrosToCalories ? "bg-slate-900" : "bg-slate-300"
+                }`}
+              >
+                <span
+                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
+                    lockMacrosToCalories ? "translate-x-5" : "translate-x-1"
+                  }`}
+                />
               </span>
               <span className="text-sm font-medium">
                 {lockMacrosToCalories ? "Locked to calories (auto-carbs)" : "Unlocked (edit carbs freely)"}
@@ -334,11 +336,11 @@ export default function MacroCalculator() {
 
           <div className="mt-4">
             {Math.abs(kcalDiff) <= KCAL_TOL ? (
-              <div className="text-sm text-green-700 bg-green-50 border border-green-200 rounded-xl px-3 py-2 inline-block">
+              <div className="text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 inline-block">
                 Macros closely match your target (±{KCAL_TOL} kcal).
               </div>
             ) : lockMacrosToCalories ? (
-              <div className="text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl px-3 py-2 inline-block">
+              <div className="text-sm text-rose-800 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 inline-block">
                 Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
               </div>
             ) : (
@@ -361,14 +363,14 @@ export default function MacroCalculator() {
 
 /* ----------------- Small UI helpers ----------------- */
 function Card({ children }) {
-  return <div className="rounded-2xl border border-gray-200 p-4">{children}</div>;
+  return <div className="rounded-2xl border border-slate-200 bg-white p-4">{children}</div>;
 }
 function Field({ label, hint, children }) {
   return (
     <div className="mb-4">
       <div className="flex items-baseline justify-between">
-        <div className="text-sm font-medium text-gray-700">{label}</div>
-        {hint && <div className="text-xs text-gray-500">{hint}</div>}
+        <div className="text-sm font-medium text-slate-800">{label}</div>
+        {hint && <div className="text-xs text-slate-500">{hint}</div>}
       </div>
       <div className="mt-2">{children}</div>
     </div>
@@ -380,8 +382,8 @@ function Segmented({ active, children, onClick }) {
       onClick={onClick}
       className={`px-3 py-2 rounded-xl text-sm font-medium border ${
         active
-          ? "bg-blue-600 text-white border-blue-600"
-          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
+          ? "bg-slate-900 text-white border-slate-900"
+          : "bg-white text-slate-800 border-slate-300 hover:bg-slate-50"
       }`}
     >
       {children}
@@ -393,20 +395,20 @@ function InfoTile({ title, value, highlight = false }) {
     <div
       className={`rounded-2xl border p-5 ${
         highlight
-          ? "border-blue-300 bg-blue-600 text-white"
-          : "border-gray-200 bg-gray-50 text-gray-700"
+          ? "border-slate-900 bg-slate-900 text-white"
+          : "border-slate-200 bg-slate-50 text-slate-800"
       }`}
     >
-      <div className={`text-xs uppercase tracking-wide ${highlight ? "opacity-90" : ""}`}>{title}</div>
+      <div className="text-xs uppercase tracking-wide">{title}</div>
       <div className={`mt-1 ${highlight ? "text-2xl font-bold" : "text-lg font-semibold"}`}>{value}</div>
     </div>
   );
 }
 function MacroSlider({ label, min, max, value, onChange, subtitle, disabled = false }) {
   return (
-    <div className="rounded-2xl border border-gray-200 p-4">
-      <div className="text-sm font-medium text-gray-700">{label}</div>
-      {subtitle && <div className="text-xs text-gray-500">{subtitle}</div>}
+    <div className="rounded-2xl border border-slate-200 bg-white p-4">
+      <div className="text-sm font-medium text-slate-800">{label}</div>
+      {subtitle && <div className="text-xs text-slate-500">{subtitle}</div>}
       <input
         type="range"
         min={min}
@@ -417,7 +419,7 @@ function MacroSlider({ label, min, max, value, onChange, subtitle, disabled = fa
         onChange={(e) => onChange(+e.target.value)}
         className={`w-full mt-3 ${disabled ? "opacity-50 cursor-not-allowed" : ""}`}
       />
-      <div className="mt-2 flex justify-between text-xs text-gray-500">
+      <div className="mt-2 flex justify-between text-xs text-slate-500">
         <span>{min} g</span>
         <span>{max} g</span>
       </div>

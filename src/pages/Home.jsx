@@ -5,8 +5,12 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <section className="text-center">
-        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight">Your Fitness Calculators</h1>
-        <p className="mt-2 text-neutral-400">Quick, accurate tools for nutrition and training.</p>
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
+          Your Fitness Calculators
+        </h1>
+        <p className="mt-2 text-slate-500">
+          Quick, accurate tools for nutrition and training.
+        </p>
       </section>
 
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
