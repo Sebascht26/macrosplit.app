@@ -29,6 +29,16 @@ export default function Shell({ children }) {
             >
               Macro Calc
             </NavLink>
+            <NavLink
+              to="/bmi"
+              className={({ isActive }) =>
+                isActive
+                  ? "underline underline-offset-4"
+                  : "text-slate-600 hover:text-slate-900"
+              }
+            >
+              BMI
+            </NavLink>
           </nav>
         </div>
       </header>
