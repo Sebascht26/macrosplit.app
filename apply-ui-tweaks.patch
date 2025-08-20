@@ -1,0 +1,192 @@
+*** Begin Patch
+*** Update File: src/App.jsx
+@@
+ export default function App() {
+   // Units for Step 1
+-  const [units, setUnits] = useState("metric"); // 'metric' | 'imperial'
++  const [units, setUnits] = useState("metric"); // 'metric' | 'imperial'
+ 
+   // STEP 1 — CALORIES (underlying state kept in METRIC: kg + cm)
+-  const [mode, setMode] = useState("calculate"); // 'calculate' | 'custom'
++  const [mode, setMode] = useState("custom"); // 'calculate' | 'custom' (default to Custom Calories)
+   const [age, setAge] = useState(25);
+   const [height, setHeight] = useState(175); // cm
+   const [weight, setWeight] = useState(70);  // kg
+   const [sex, setSex] = useState("male");    // 'male' | 'female'
+   const [activityIndex, setActivityIndex] = useState(3); // 1..5
+@@
+   const macroCalories = protein * 4 + fat * 9 + carbs * 4;
+-  const kcalDiff = calcCalories - macroCalories;
++  const kcalDiff = calcCalories - macroCalories;
++  const KCAL_TOL = 15; // allow small rounding tolerance
+ 
+   // Auto-balance carbs whenever locked and dependencies change
+   useEffect(() => {
+     if (!lockMacrosToCalories) return;
+     const remaining = calcCalories - (protein * 4 + fat * 9);
+     setCarbs(clamp(Math.round(remaining / 4), 0, 600));
+   }, [lockMacrosToCalories, calcCalories, protein, fat]);
+@@
+-  const applySmartDefaults = () => {
+-    const p = clamp(Math.round(weight * 2.0), 60, 260);   // ≈2.0 g/kg
+-    const f = clamp(Math.round(weight * 0.8), 35, 120);   // ≈0.8 g/kg
+-    setProtein(p);
+-    setFat(f);
+-    // carbs will auto-update if locked; otherwise compute once
+-    if (!lockMacrosToCalories) autoBalanceCarbs();
+-  };
++  // Reset everything to initial, clean defaults
++  const resetAll = () => {
++    setUnits("metric");
++    setMode("custom");
++    setAge(25);
++    setHeight(175);
++    setWeight(70);
++    setSex("male");
++    setActivityIndex(3);
++    setGoalRate(0);
++    setCustomCalories(2200);
++    setProtein(140);
++    setFat(56);
++    setLockMacrosToCalories(true);
++    // carbs will auto-update by effect when locked
++    const remaining = 2200 - (140 * 4 + 56 * 9);
++    setCarbs(clamp(Math.round(remaining / 4), 0, 600));
++  };
+@@
+       <header className="sticky top-0 z-10 backdrop-blur bg-white/70 border-b border-gray-200">
+         <div className="mx-auto max-w-5xl px-4 py-4 flex items-center justify-between">
+           <h1 className="text-2xl font-semibold tracking-tight text-blue-700">
+             Macro Calculator
+           </h1>
+           <div className="flex gap-2">
+-            <button
+-              onClick={applySmartDefaults}
+-              className="rounded-xl px-3 py-2 text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+-            >
+-              Smart defaults
+-            </button>
+-            {!lockMacrosToCalories && (
+-              <button
+-                onClick={autoBalanceCarbs}
+-                className="rounded-xl px-3 py-2 text-sm font-medium bg-gray-200 text-gray-800 hover:bg-gray-300"
+-              >
+-                Auto-balance carbs
+-              </button>
+-            )}
++            <button
++              onClick={resetAll}
++              className="rounded-xl px-3 py-2 text-sm font-medium bg-gray-100 text-gray-800 border border-gray-300 hover:bg-gray-200"
++              title="Reset all inputs to defaults"
++            >
++              Reset
++            </button>
+           </div>
+         </div>
+       </header>
+@@
+-          <div className="flex items-center justify-between mb-4">
++          <div className="flex items-center justify-between mb-4">
+             <h2 className="text-lg font-semibold text-gray-800">Step 1 · Calories</h2>
+             <div className="inline-flex rounded-xl overflow-hidden border border-gray-200">
+               <button
+-                className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
++                className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                 onClick={() => switchUnits("metric")}
+               >
+-                Metric (kg/cm)
++                Metric
+               </button>
+               <button
+-                className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
++                className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+                 onClick={() => switchUnits("imperial")}
+               >
+-                Imperial (lb/ft/in)
++                Imperial
+               </button>
+             </div>
+           </div>
+ 
+           {/* Mode Toggle */}
+           <div className="inline-flex rounded-xl overflow-hidden border border-gray-200">
+             <button
+-              className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
++              className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+               onClick={() => setMode("calculate")}
+             >
+-              Calculate
++              Calculate Calories
+             </button>
+             <button
+-              className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
++              className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-50"}`}
+               onClick={() => setMode("custom")}
+             >
+-              Enter custom
++              Custom Calories
+             </button>
+           </div>
+@@
+-                <Field label={`Activity: ${activity.label} (×${activity.mult})`}>
++                <Field
++                  label={
++                    <div className="flex items-center gap-2">
++                      <span>Activity: {activity.label} (×{activity.mult})</span>
++                      <button
++                        type="button"
++                        onClick={() => setShowActivityHelp((v) => !v)}
++                        className="text-xs px-2 py-1 rounded-lg border border-gray-300 hover:bg-gray-50"
++                        title="Help: choose your activity level"
++                      >
++                        Help
++                      </button>
++                    </div>
++                  }
++                >
+                   <input
+                     type="range"
+                     min={1} max={5} step={1}
+                     value={activityIndex}
+                     onChange={(e) => setActivityIndex(+e.target.value)}
+                     className="w-full"
+                   />
+-                  <div className="mt-1 text-xs text-gray-500">{activity.desc}</div>
++                  <div className="mt-1 text-xs text-gray-500">{activity.desc}</div>
++                  {showActivityHelp && (
++                    <div className="mt-3 text-xs rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-700">
++                      {ACTIVITY_STEPS.map(s => (
++                        <div key={s.key} className="flex items-baseline gap-2">
++                          <div className="w-24 font-medium">{s.label}</div>
++                          <div className="shrink-0 text-gray-500">×{s.mult}</div>
++                          <div className="text-gray-600">{s.desc}</div>
++                        </div>
++                      ))}
++                    </div>
++                  )}
+                 </Field>
+ 
+                 <Field
+                   label={`Goal: ${goalRate.toFixed(2)} ${units === "metric" ? "kg/week" : "lb/week"} (${goalRate === 0 ? "Maintain" : goalRate < 0 ? "Lose" : "Gain"})`}
+                   hint={units === "metric" ? "Daily kcal change ≈ 1100 × kg/week" : "Daily kcal change ≈ 500 × lb/week"}
+                 >
+@@
+-          <div className="mt-6 grid sm:grid-cols-3 gap-4">
+-            <InfoTile title="BMR (Mifflin-St Jeor)" value={`${bmr} kcal/day`} />
+-            <InfoTile title="Target calories" value={`${calcCalories} kcal/day`} highlight />
+-            <InfoTile title="Activity factor" value={`× ${activity.mult}`} />
++          <div className="mt-6 grid sm:grid-cols-3 gap-4">
++            <InfoTile title="BMR (Mifflin-St Jeor)" value={`${bmr} kcal/day`} />
++            <InfoTile title="Target calories" value={`${calcCalories} kcal/day`} highlight />
+           </div>
+         </section>
+@@
+           <div className="grid md:grid-cols-3 gap-6">
+             <MacroSlider
+-              label={`Protein: ${protein} g`}
++              label={`Protein: ${protein} g (${(protein / Math.max(1, weight)).toFixed(2)} g/kg)`}
+               min={40} max={300} value={protein}
+               onChange={(v) => setProtein(v)}
+               subtitle="~2.0 g/kg is common for lifters"
+             />
+*** End Patch
