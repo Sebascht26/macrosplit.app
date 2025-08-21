@@ -6,19 +6,65 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+report.[0-9]*.[0-9]*.json
 
-node_modules
-dist
-dist-ssr
-*.local
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Node / package managers
+node_modules/
+.pnpm-store/
+.npm/
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+
+# Build output
+dist/
+build/
+out/
+
+# Vite cache
+.vite/
+node_modules/.vite/
+
+# Tool caches
+.cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+.parcel-cache/
+
+# Tests
+coverage/
+.nyc_output/
+
+# Env files (keep templates)
+.env
+.env.*
+!.env.example
+!.env.defaults
+
+# Editors / IDEs
+.vscode/
+.idea/
+
+# OS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+Thumbs.db
+
+# SSL keys (local dev)
+*.pem
+*.key
+*.crt
+
+# Misc
+*.local
+*.swp
+*.swo
