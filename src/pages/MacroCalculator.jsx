@@ -100,264 +100,278 @@ export default function MacroCalculator() {
     setHeight(clamp(cm, 120, 220));
   };
 
+  // 🔒 Bulletproof title (helps during HMR or exotic setups)
+  useEffect(() => {
+    document.title = "Macro Calculator";
+  }, []);
+
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <main className="mx-auto max-w-5xl px-4 py-8 grid gap-6">
-        {/* Page title + actions */}
-        <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-semibold tracking-tight">Macronutrient Calculator</h1>
-          <div className="flex gap-2">
-            <button
-              onClick={applySmartDefaults}
-              className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800"
-            >
-              Smart defaults
-            </button>
-            {!lockMacrosToCalories && (
+    <>
+      {/* React 19: head metadata directly in JSX */}
+      <title>Macro Calculator</title>
+      <meta
+        name="description"
+        content="Calculate daily macros (protein, carbs, fats) based on your calories, goals, and activity."
+      />
+
+      <div className="min-h-screen bg-white text-slate-900">
+        <main className="mx-auto max-w-5xl px-4 py-8 grid gap-6">
+          {/* Page title + actions */}
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-semibold tracking-tight">Macronutrient Calculator</h1>
+            <div className="flex gap-2">
               <button
-                onClick={autoBalanceCarbs}
-                className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-100 border border-slate-200 text-slate-900 hover:bg-slate-200"
+                onClick={applySmartDefaults}
+                className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-900 text-white hover:bg-slate-800"
               >
-                Auto-balance carbs
+                Smart defaults
               </button>
-            )}
-          </div>
-        </div>
-
-        {/* STEP 1: CALORIES */}
-        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Step 1 · Calories</h2>
-            <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
-              <button
-                className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
-                onClick={() => switchUnits("metric")}
-              >
-                Metric (kg/cm)
-              </button>
-              <button
-                className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
-                onClick={() => switchUnits("imperial")}
-              >
-                Imperial (lb/ft/in)
-              </button>
-            </div>
-          </div>
-
-          {/* Mode Toggle */}
-          <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
-            <button
-              className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
-              onClick={() => setMode("calculate")}
-            >
-              Calculate
-            </button>
-            <button
-              className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
-              onClick={() => setMode("custom")}
-            >
-              Enter custom
-            </button>
-          </div>
-
-          {/* Calculate Mode */}
-          {mode === "calculate" ? (
-            <div className="mt-6 grid md:grid-cols-2 gap-6">
-              <Card>
-                <Field label={`Age: ${age} yrs`}>
-                  <input type="range" min={15} max={80} value={age}
-                    onChange={(e) => setAge(+e.target.value)} className="w-full" />
-                </Field>
-
-                {units === "metric" ? (
-                  <>
-                    <Field label={`Height: ${height} cm`}>
-                      <input type="range" min={140} max={210} value={height}
-                        onChange={(e) => setHeight(+e.target.value)} className="w-full" />
-                    </Field>
-                    <Field label={`Weight: ${weight.toFixed(1)} kg`}>
-                      <input type="range" min={40} max={200} step={0.5} value={weight}
-                        onChange={(e) => setWeight(+e.target.value)} className="w-full" />
-                    </Field>
-                  </>
-                ) : (
-                  <>
-                    <Field label={`Height: ${displayedFt} ft ${displayedIn} in`}>
-                      <div className="space-y-2">
-                        <div>
-                          <div className="text-xs text-slate-500 mb-1">Feet</div>
-                          <input type="range" min={4} max={7} value={displayedFt}
-                            onChange={(e) => setHeightFromFtIn(+e.target.value, displayedIn)}
-                            className="w-full" />
-                        </div>
-                        <div>
-                          <div className="text-xs text-slate-500 mb-1">Inches</div>
-                          <input type="range" min={0} max={11} value={displayedIn}
-                            onChange={(e) => setHeightFromFtIn(displayedFt, +e.target.value)}
-                            className="w-full" />
-                        </div>
-                      </div>
-                    </Field>
-                    <Field label={`Weight: ${displayedLbs} lb`}>
-                      <input
-                        type="range"
-                        min={90} max={440} step={1}
-                        value={displayedLbs}
-                        onChange={(e) => {
-                          const lbs = +e.target.value;
-                          setWeight(parseFloat((lbs / LB_PER_KG).toFixed(1)));
-                        }}
-                        className="w-full"
-                      />
-                    </Field>
-                  </>
-                )}
-              </Card>
-
-              <Card>
-                <div className="mb-4">
-                  <div className="text-sm font-medium text-slate-700 mb-2">Sex</div>
-                  <div className="flex gap-2">
-                    <Segmented active={sex === "male"} onClick={() => setSex("male")}>Male</Segmented>
-                    <Segmented active={sex === "female"} onClick={() => setSex("female")}>Female</Segmented>
-                  </div>
-                </div>
-
-                <Field label={`Activity: ${activity.label} (×${activity.mult})`}>
-                  <input
-                    type="range"
-                    min={1} max={5} step={1}
-                    value={activityIndex}
-                    onChange={(e) => setActivityIndex(+e.target.value)}
-                    className="w-full"
-                  />
-                  <div className="mt-1 text-xs text-slate-500">{activity.desc}</div>
-                </Field>
-
-                <Field
-                  label={`Goal: ${goalRate.toFixed(2)} ${units === "metric" ? "kg/week" : "lb/week"} (${goalRate === 0 ? "Maintain" : goalRate < 0 ? "Lose" : "Gain"})`}
-                  hint={units === "metric" ? "Daily kcal change ≈ 1100 × kg/week" : "Daily kcal change ≈ 500 × lb/week"}
-                >
-                  <input
-                    type="range"
-                    min={units === "metric" ? -1 : -2.2}
-                    max={units === "metric" ? 1 : 2.2}
-                    step={units === "metric" ? 0.25 : 0.5}
-                    value={goalRate}
-                    onChange={(e) => setGoalRate(+e.target.value)}
-                    className="w-full"
-                  />
-                  <div className="flex justify-between text-xs text-slate-500 mt-1">
-                    <span>Lose faster</span>
-                    <span>Maintain</span>
-                    <span>Gain faster</span>
-                  </div>
-                </Field>
-              </Card>
-            </div>
-          ) : (
-            // Custom Mode
-            <div className="mt-6 max-w-sm">
-              <label className="block text-sm font-medium text-slate-700 mb-1">Custom calories</label>
-              <input
-                type="number"
-                inputMode="numeric"
-                className="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700"
-                value={customCalories}
-                onChange={(e) => setCustomCalories(+e.target.value)}
-                min={0}
-              />
-            </div>
-          )}
-
-          <div className="mt-6 grid sm:grid-cols-3 gap-4">
-            <InfoTile title="BMR (Mifflin-St Jeor)" value={`${bmr} kcal/day`} />
-            <InfoTile title="Target calories" value={`${calcCalories} kcal/day`} highlight />
-            <InfoTile title="Activity factor" value={`× ${activity.mult}`} />
-          </div>
-        </section>
-
-        {/* STEP 2: MACROS */}
-        <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Step 2 · Macros (grams)</h2>
-            <label className="inline-flex items-center gap-2 select-none">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={lockMacrosToCalories}
-                onChange={(e) => setLockMacrosToCalories(e.target.checked)}
-              />
-              <span
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
-                  lockMacrosToCalories ? "bg-slate-900" : "bg-slate-300"
-                }`}
-              >
-                <span
-                  className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
-                    lockMacrosToCalories ? "translate-x-5" : "translate-x-1"
-                  }`}
-                />
-              </span>
-              <span className="text-sm font-medium">
-                {lockMacrosToCalories ? "Locked to calories (auto-carbs)" : "Unlocked (edit carbs freely)"}
-              </span>
-            </label>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            <MacroSlider
-              label={`Protein: ${protein} g`}
-              min={40} max={300} value={protein}
-              onChange={(v) => setProtein(v)}
-              subtitle="~2.0 g/kg is common for lifters"
-            />
-            <MacroSlider
-              label={`Fat: ${fat} g`}
-              min={20} max={150} value={fat}
-              onChange={(v) => setFat(v)}
-              subtitle="~0.6–1.0 g/kg is typical"
-            />
-            <MacroSlider
-              label={`Carbs: ${carbs} g`}
-              min={0} max={600} value={carbs}
-              onChange={(v) => setCarbs(v)}
-              subtitle={lockMacrosToCalories ? "Auto-adjusted to hit calories" : "Adjust freely"}
-              disabled={lockMacrosToCalories}
-            />
-          </div>
-
-          <div className="mt-6 grid sm:grid-cols-4 gap-4">
-            <InfoTile title="Protein kcal" value={`${protein * 4}`} />
-            <InfoTile title="Fat kcal" value={`${fat * 9}`} />
-            <InfoTile title="Carb kcal" value={`${carbs * 4}`} />
-            <InfoTile title="Macros total" value={`${macroCalories} kcal`} />
-          </div>
-
-          <div className="mt-4">
-            {Math.abs(kcalDiff) <= KCAL_TOL ? (
-              <div className="text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 inline-block">
-                Macros closely match your target (±{KCAL_TOL} kcal).
-              </div>
-            ) : lockMacrosToCalories ? (
-              <div className="text-sm text-rose-800 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 inline-block">
-                Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
-              </div>
-            ) : (
-              <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 inline-flex items-center gap-2">
-                Your macros are {Math.abs(kcalDiff)} kcal {kcalDiff > 0 ? "below" : "above"} target.
+              {!lockMacrosToCalories && (
                 <button
                   onClick={autoBalanceCarbs}
-                  className="ml-1 underline decoration-amber-500 hover:opacity-80"
+                  className="rounded-xl px-3 py-2 text-sm font-medium bg-slate-100 border border-slate-200 text-slate-900 hover:bg-slate-200"
                 >
                   Auto-balance carbs
                 </button>
+              )}
+            </div>
+          </div>
+
+          {/* STEP 1: CALORIES */}
+          <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Step 1 · Calories</h2>
+              <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
+                <button
+                  className={`px-3 py-2 text-sm font-medium ${units === "metric" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
+                  onClick={() => switchUnits("metric")}
+                >
+                  Metric (kg/cm)
+                </button>
+                <button
+                  className={`px-3 py-2 text-sm font-medium ${units === "imperial" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
+                  onClick={() => switchUnits("imperial")}
+                >
+                  Imperial (lb/ft/in)
+                </button>
+              </div>
+            </div>
+
+            {/* Mode Toggle */}
+            <div className="inline-flex rounded-xl overflow-hidden border border-slate-200">
+              <button
+                className={`px-4 py-2 text-sm font-medium ${mode === "calculate" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
+                onClick={() => setMode("calculate")}
+              >
+                Calculate
+              </button>
+              <button
+                className={`px-4 py-2 text-sm font-medium ${mode === "custom" ? "bg-slate-900 text-white" : "bg-white text-slate-800 hover:bg-slate-50"}`}
+                onClick={() => setMode("custom")}
+              >
+                Enter custom
+              </button>
+            </div>
+
+            {/* Calculate Mode */}
+            {mode === "calculate" ? (
+              <div className="mt-6 grid md:grid-cols-2 gap-6">
+                <Card>
+                  <Field label={`Age: ${age} yrs`}>
+                    <input type="range" min={15} max={80} value={age}
+                      onChange={(e) => setAge(+e.target.value)} className="w-full" />
+                  </Field>
+
+                  {units === "metric" ? (
+                    <>
+                      <Field label={`Height: ${height} cm`}>
+                        <input type="range" min={140} max={210} value={height}
+                          onChange={(e) => setHeight(+e.target.value)} className="w-full" />
+                      </Field>
+                      <Field label={`Weight: ${weight.toFixed(1)} kg`}>
+                        <input type="range" min={40} max={200} step={0.5} value={weight}
+                          onChange={(e) => setWeight(+e.target.value)} className="w-full" />
+                      </Field>
+                    </>
+                  ) : (
+                    <>
+                      <Field label={`Height: ${displayedFt} ft ${displayedIn} in`}>
+                        <div className="space-y-2">
+                          <div>
+                            <div className="text-xs text-slate-500 mb-1">Feet</div>
+                            <input type="range" min={4} max={7} value={displayedFt}
+                              onChange={(e) => setHeightFromFtIn(+e.target.value, displayedIn)}
+                              className="w-full" />
+                          </div>
+                          <div>
+                            <div className="text-xs text-slate-500 mb-1">Inches</div>
+                            <input type="range" min={0} max={11} value={displayedIn}
+                              onChange={(e) => setHeightFromFtIn(displayedFt, +e.target.value)}
+                              className="w-full" />
+                          </div>
+                        </div>
+                      </Field>
+                      <Field label={`Weight: ${displayedLbs} lb`}>
+                        <input
+                          type="range"
+                          min={90} max={440} step={1}
+                          value={displayedLbs}
+                          onChange={(e) => {
+                            const lbs = +e.target.value;
+                            setWeight(parseFloat((lbs / LB_PER_KG).toFixed(1)));
+                          }}
+                          className="w-full"
+                        />
+                      </Field>
+                    </>
+                  )}
+                </Card>
+
+                <Card>
+                  <div className="mb-4">
+                    <div className="text-sm font-medium text-slate-700 mb-2">Sex</div>
+                    <div className="flex gap-2">
+                      <Segmented active={sex === "male"} onClick={() => setSex("male")}>Male</Segmented>
+                      <Segmented active={sex === "female"} onClick={() => setSex("female")}>Female</Segmented>
+                    </div>
+                  </div>
+
+                  <Field label={`Activity: ${activity.label} (×${activity.mult})`}>
+                    <input
+                      type="range"
+                      min={1} max={5} step={1}
+                      value={activityIndex}
+                      onChange={(e) => setActivityIndex(+e.target.value)}
+                      className="w-full"
+                    />
+                    <div className="mt-1 text-xs text-slate-500">{activity.desc}</div>
+                  </Field>
+
+                  <Field
+                    label={`Goal: ${goalRate.toFixed(2)} ${units === "metric" ? "kg/week" : "lb/week"} (${goalRate === 0 ? "Maintain" : goalRate < 0 ? "Lose" : "Gain"})`}
+                    hint={units === "metric" ? "Daily kcal change ≈ 1100 × kg/week" : "Daily kcal change ≈ 500 × lb/week"}
+                  >
+                    <input
+                      type="range"
+                      min={units === "metric" ? -1 : -2.2}
+                      max={units === "metric" ? 1 : 2.2}
+                      step={units === "metric" ? 0.25 : 0.5}
+                      value={goalRate}
+                      onChange={(e) => setGoalRate(+e.target.value)}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-slate-500 mt-1">
+                      <span>Lose faster</span>
+                      <span>Maintain</span>
+                      <span>Gain faster</span>
+                    </div>
+                  </Field>
+                </Card>
+              </div>
+            ) : (
+              // Custom Mode
+              <div className="mt-6 max-w-sm">
+                <label className="block text-sm font-medium text-slate-700 mb-1">Custom calories</label>
+                <input
+                  type="number"
+                  inputMode="numeric"
+                  className="w-full rounded-xl border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-slate-700"
+                  value={customCalories}
+                  onChange={(e) => setCustomCalories(+e.target.value)}
+                  min={0}
+                />
               </div>
             )}
-          </div>
-        </section>
-      </main>
-    </div>
+
+            <div className="mt-6 grid sm:grid-cols-3 gap-4">
+              <InfoTile title="BMR (Mifflin-St Jeor)" value={`${bmr} kcal/day`} />
+              <InfoTile title="Target calories" value={`${calcCalories} kcal/day`} highlight />
+              <InfoTile title="Activity factor" value={`× ${activity.mult}`} />
+            </div>
+          </section>
+
+          {/* STEP 2: MACROS */}
+          <section className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-lg font-semibold">Step 2 · Macros (grams)</h2>
+              <label className="inline-flex items-center gap-2 select-none">
+                <input
+                  type="checkbox"
+                  className="sr-only"
+                  checked={lockMacrosToCalories}
+                  onChange={(e) => setLockMacrosToCalories(e.target.checked)}
+                />
+                <span
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition ${
+                    lockMacrosToCalories ? "bg-slate-900" : "bg-slate-300"
+                  }`}
+                >
+                  <span
+                    className={`inline-block h-5 w-5 transform rounded-full bg-white transition ${
+                      lockMacrosToCalories ? "translate-x-5" : "translate-x-1"
+                    }`}
+                  />
+                </span>
+                <span className="text-sm font-medium">
+                  {lockMacrosToCalories ? "Locked to calories (auto-carbs)" : "Unlocked (edit carbs freely)"}
+                </span>
+              </label>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6">
+              <MacroSlider
+                label={`Protein: ${protein} g`}
+                min={40} max={300} value={protein}
+                onChange={(v) => setProtein(v)}
+                subtitle="~2.0 g/kg is common for lifters"
+              />
+              <MacroSlider
+                label={`Fat: ${fat} g`}
+                min={20} max={150} value={fat}
+                onChange={(v) => setFat(v)}
+                subtitle="~0.6–1.0 g/kg is typical"
+              />
+              <MacroSlider
+                label={`Carbs: ${carbs} g`}
+                min={0} max={600} value={carbs}
+                onChange={(v) => setCarbs(v)}
+                subtitle={lockMacrosToCalories ? "Auto-adjusted to hit calories" : "Adjust freely"}
+                disabled={lockMacrosToCalories}
+              />
+            </div>
+
+            <div className="mt-6 grid sm:grid-cols-4 gap-4">
+              <InfoTile title="Protein kcal" value={`${protein * 4}`} />
+              <InfoTile title="Fat kcal" value={`${fat * 9}`} />
+              <InfoTile title="Carb kcal" value={`${carbs * 4}`} />
+              <InfoTile title="Macros total" value={`${macroCalories} kcal`} />
+            </div>
+
+            <div className="mt-4">
+              {Math.abs(kcalDiff) <= KCAL_TOL ? (
+                <div className="text-sm text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl px-3 py-2 inline-block">
+                  Macros closely match your target (±{KCAL_TOL} kcal).
+                </div>
+              ) : lockMacrosToCalories ? (
+                <div className="text-sm text-rose-800 bg-rose-50 border border-rose-200 rounded-xl px-3 py-2 inline-block">
+                  Protein/Fat combination exceeds target — carbs floored at 0 g. Reduce Protein/Fat or increase calories.
+                </div>
+              ) : (
+                <div className="text-sm text-amber-800 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 inline-flex items-center gap-2">
+                  Your macros are {Math.abs(kcalDiff)} kcal {kcalDiff > 0 ? "below" : "above"} target.
+                  <button
+                    onClick={autoBalanceCarbs}
+                    className="ml-1 underline decoration-amber-500 hover:opacity-80"
+                  >
+                    Auto-balance carbs
+                  </button>
+                </div>
+              )}
+            </div>
+          </section>
+        </main>
+      </div>
+    </>
   );
 }
 
