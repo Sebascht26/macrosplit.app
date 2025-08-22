@@ -12,11 +12,11 @@ export default function App() {
   return (
     <Routes>
       <Route element={<SiteLayout />}>
-        <Route path="/" element={<Home />} />
-        <Route path="/macro" element={<MacroCalculator />} />
-        <Route path="/bmi" element={<BmiCalculator />} />
-        <Route path="/ffmi" element={<FFMICalculator />} />
-        <Route path="/1rm" element={<OneRepMaxCalculator />} />
+        <Route index element={<Home />} />
+        <Route path="macro" element={<MacroCalculator />} />
+        <Route path="bmi" element={<BmiCalculator />} />
+        <Route path="ffmi" element={<FFMICalculator />} />
+        <Route path="1rm" element={<OneRepMaxCalculator />} />
       </Route>
 
       {/* Fallback */}

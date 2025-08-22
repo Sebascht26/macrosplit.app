@@ -8,11 +8,11 @@ export default function SiteLayout() {
       <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
         <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/favicon-macro.svg" alt="" className="h-6 w-6" />
+            <img src="/favicon.svg" alt="" className="h-6 w-6" />
             <span className="font-semibold tracking-tight">Macro Tools</span>
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-4 text-sm">
+          <nav className="hidden sm:flex items-center gap-2 text-sm">
             <Nav to="/" end>Home</Nav>
             <Nav to="/macro">Macro</Nav>
             <Nav to="/bmi">BMI</Nav>
@@ -29,12 +29,12 @@ export default function SiteLayout() {
 
       {/* Footer */}
       <footer className="mt-12 border-t border-slate-200">
-        <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-600 flex items-center justify-between">
+        <div className="mx-auto max-w-6xl px-4 py-6 text-xs text-slate-600 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>© {new Date().getFullYear()} Macro Tools</div>
           <div className="flex gap-4">
-            <a className="hover:underline" href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
-            <a className="hover:underline" href="#" onClick={(e) => e.preventDefault()}>Privacy</a>
-            <a className="hover:underline" href="#" onClick={(e) => e.preventDefault()}>Terms</a>
+            <a href="/impressum.html" className="hover:underline">Impressum</a>
+            <a href="/privacy.html" className="hover:underline">Privacy</a>
+            <a href="/disclaimer.html" className="hover:underline">Disclaimer</a>
           </div>
         </div>
       </footer>
