@@ -5,13 +5,22 @@ export default function Home() {
   return (
     <>
       <title>Macro Tools</title>
-      <meta name="description" content="Macro Tools: Macro Calculator, BMI, and FFMI calculators." />
+      <meta
+        name="description"
+        content="Macro Tools: Calorie (TDEE), Macro, BMI, FFMI, and 1RM calculators."
+      />
 
       <div className="min-h-screen bg-white text-slate-900">
         <main className="mx-auto max-w-5xl px-4 py-8">
           <h1 className="text-2xl font-semibold tracking-tight mb-6">Macro Tools</h1>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <ToolCard
+              to="/calories"
+              title="Calorie Calculator"
+              desc="Estimate daily calories (TDEE) from BMR, activity, and goals."
+              badge="New"
+            />
             <ToolCard
               to="/macro"
               title="Macro Calculator"
@@ -26,15 +35,12 @@ export default function Home() {
               to="/ffmi"
               title="FFMI Calculator"
               desc="Estimate muscularity from lean mass and height."
-              badge="New"
             />
             <ToolCard
-                to="/1rm"
-                title="1RM Calculator"
-               desc="Estimate your one-rep max, training max, and %1RM loads."
-                badge="New"
+              to="/1rm"
+              title="1RM Calculator"
+              desc="Estimate your one-rep max, training max, and %1RM loads."
             />
-
           </div>
         </main>
       </div>
